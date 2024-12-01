@@ -1,45 +1,51 @@
-import Header from './components/Header';
-import Input from './components/Input';
-import Table from './components/Table';
+import Header from "./components/Header/Header"
+import Input from './components/Input/Input';
+import Table from './components/Table/Table';
+import React,{useState} from 'react';
 
 function App() {
-  // const calculateHandler = (userInput) => {
-  //   // Should be triggered when form is submitted
-  //   // You might not directly want to bind it to the submit event on the form though...
+  const [userInput,setUserInput]=useState(null);
+   
+  const calculateHandler = (userInput) => {
+    setUserInput(userInput); 
+  };
 
-  //   const yearlyData = []; // per-year results
+  const yearlyData = []; 
 
-  //   let currentSavings = +userInput['current-savings']; // feel free to change the shape of this input object!
-  //   const yearlyContribution = +userInput['yearly-contribution']; // as mentioned: feel free to change the shape...
-  //   const expectedReturn = +userInput['expected-return'] / 100;
-  //   const duration = +userInput['duration'];
+  if(userInput){   //instead of this we can directly create a state and updata yearlyDate throught setUserInput ,in this method we can take yearlyData directly
 
-  //   // The below code calculates yearly results (total savings, interest etc)
-  //   for (let i = 0; i < duration; i++) {
-  //     const yearlyInterest = currentSavings * expectedReturn;
-  //     currentSavings += yearlyInterest + yearlyContribution;
-  //     yearlyData.push({
-  //       // feel free to change the shape of the data pushed to the array!
-  //       year: i + 1,
-  //       yearlyInterest: yearlyInterest,
-  //       savingsEndOfYear: currentSavings,
-  //       yearlyContribution: yearlyContribution,
-  //     });
-  //   }
+    let currentSavings = +userInput['current-savings']; 
+    const yearlyContribution = +userInput['yearly-contribution']; 
+    const expectedReturn = +userInput['expected-return'] / 100;
+    const duration = +userInput['duration'];
 
-  //   // do something with yearlyData ...
-  // };
+
+    for (let i = 0; i < duration; i++) {
+      const yearlyInterest = currentSavings * expectedReturn;
+      currentSavings += yearlyInterest + yearlyContribution;
+      yearlyData.push({
+
+        year: i + 1,
+        yearlyInterest: yearlyInterest,
+        savingsEndOfYear: currentSavings,
+        yearlyContribution: yearlyContribution,
+      });
+    }
+
+  }
 
   return (
     <div>
       <Header />
-      <Input />
-      <Table />
-      {/* Todo: Show below table conditionally (only once result data is available) */}
-      {/* Show fallback text if no data is available */}
+      <Input userPass={calculateHandler}/>
+      {!userInput && <p style={{textAlign:'center'}}  >No investemt calculated yet.</p>}
+      {userInput && <Table data={yearlyData} intialInvestment={userInput['current-savings']}/>} 
+      
+
 
     </div>
   );
+  //intial investement passing from input.jsx
 }
 
 export default App;
